@@ -44,7 +44,7 @@ func Ping() {
 // Verify if the table exists
 func TableExists(tableName string) bool {
 	query := fmt.Sprintf("SHOW TABLES LIKE '%s'", tableName)
-	rows, err := db.Query(query)
+	rows, err := Query(query)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -58,11 +58,45 @@ func TableExists(tableName string) bool {
 func CreateTable(schema string, name string) {
 	if !TableExists(name) {
 		fmt.Println("Creating table if it does not exist...")
-		res, err := db.Exec(schema)
+		res, err := Exec(schema)
 		if err != nil {
 			panic(err.Error())
 		}
 		rowsAffected, _ := res.RowsAffected()
 		fmt.Println("Rows affected: ", rowsAffected)
 	}
+}
+
+// Reset the database by dropping the table if it exists
+func TruncateTable(tableName string) {
+	if TableExists(tableName) {
+		fmt.Println("Dropping table if it exists...")
+		query := fmt.Sprintf("TRUNCATE TABLE IF EXISTS %s", tableName)
+		res, err := Exec(query)
+		if err != nil {
+			panic(err.Error())
+		}
+		rowsAffected, _ := res.RowsAffected()
+		fmt.Println("Rows affected: ", rowsAffected)
+	} else {
+		fmt.Println("Table does not exist, no action taken.")
+	}
+}
+
+// Polimorfismo en Exec
+func Exec(query string, args ...interface{}) (sql.Result, error) {
+	res, err := db.Exec(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// Polmorfism en Query
+func Query(query string, args ...interface{}) (*sql.Rows, error) {
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	return rows, nil
 }

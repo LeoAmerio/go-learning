@@ -1,28 +1,40 @@
-# Binaries for the current project
+# Binarios
 *.exe
-*.bin
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Archivos de test
+*.test
+
+# Archivos de output
 *.out
 
-# Compiled binaries for other platforms (cross-compilation)
-bin/
-
-# Dependency caches
+# Dependency directories
 vendor/
-go.mod.sum
+
+# Go workspace file
+go.work
+
+# Directorios de build
+bin/
+build/
+
+# Archivos de módulos y cache
 go.sum
-go.work.sum
+go.mod.cache/
 
-# Test-related artifacts
-*.test
-testdata/
-
-# Editor/IDE-specific files
-.idea/
+# Archivos de IDEs
 .vscode/
+.idea/
 *.sublime-project
 *.sublime-workspace
 .DS_Store
 
-# Logs and temporary files
+# Logs
 *.log
 tmp/
+
+# Archivos específicos de tu proyecto
+testdata/

@@ -67,11 +67,11 @@ func CreateTable(schema string, name string) {
 	}
 }
 
-// Reset the database by dropping the table if it exists
+// Reset the database by truncate the table
 func TruncateTable(tableName string) {
 	if TableExists(tableName) {
-		fmt.Println("Dropping table if it exists...")
-		query := fmt.Sprintf("TRUNCATE TABLE IF EXISTS %s", tableName)
+		fmt.Println("Truncatting table...")
+		query := fmt.Sprintf("TRUNCATE TABLE %s", tableName)
 		res, err := Exec(query)
 		if err != nil {
 			panic(err.Error())

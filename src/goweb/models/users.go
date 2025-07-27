@@ -92,3 +92,12 @@ func (user *User) Save() {
 		user.update()
 	}
 }
+
+func (user *User) Delete() {
+	sql := "DELETE FROM users WHERE id = ?"
+	_, err := db.Exec(sql, user.ID)
+	if err != nil {
+		panic(err.Error())
+	}
+	user.ID = 0 // Reset ID after deletion
+}

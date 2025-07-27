@@ -1,0 +1,28 @@
+# Binaries for the current project
+*.exe
+*.bin
+*.out
+
+# Compiled binaries for other platforms (cross-compilation)
+bin/
+
+# Dependency caches
+vendor/
+go.mod.sum
+go.sum
+go.work.sum
+
+# Test-related artifacts
+*.test
+testdata/
+
+# Editor/IDE-specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+
+# Logs and temporary files
+*.log
+tmp/

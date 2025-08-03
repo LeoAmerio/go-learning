@@ -48,7 +48,7 @@ func TableExists(tableName string) bool {
 	if err != nil {
 		panic(err.Error())
 	}
-	// defer rows.Close()
+	defer rows.Close()
 
 	exists := rows.Next()
 	return exists
@@ -85,6 +85,8 @@ func TruncateTable(tableName string) {
 
 // Polimorfismo en Exec
 func Exec(query string, args ...interface{}) (sql.Result, error) {
+	Connect()
+	defer Close()
 	res, err := db.Exec(query, args...)
 	if err != nil {
 		return nil, err
@@ -94,6 +96,8 @@ func Exec(query string, args ...interface{}) (sql.Result, error) {
 
 // Polmorfism en Query
 func Query(query string, args ...interface{}) (*sql.Rows, error) {
+	Connect()
+	defer Close()
 	rows, err := db.Query(query, args...)
 	if err != nil {
 		return nil, err

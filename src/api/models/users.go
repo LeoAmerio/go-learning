@@ -42,10 +42,14 @@ func (user *User) insert() {
 }
 
 // ListAll registers
-func ListUsers() Users {
+func ListUsers() (Users, error) {
 	sql := "SELECT id, username, password, email FROM users"
 	users := Users{}
-	rows, _ := db.Query(sql)
+	rows, err := db.Query(sql)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
 	for rows.Next() {
 		user := User{}
@@ -57,20 +61,24 @@ func ListUsers() Users {
 		users = append(users, user)
 	}
 
-	return users
+	return users, nil
 }
 
 // GetUserByID retrieves a user by ID
-func GetUserByID(id int64) *User {
+func GetUserByID(id int64) (*User, error) {
 	user := NewUser("", "", "")
 	sql := "SELECT id, username, password, email FROM users WHERE id = ?"
-	rows, _ := db.Query(sql, id)
+	rows, err := db.Query(sql, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
 	for rows.Next() {
 		rows.Scan(&user.ID, &user.Username, &user.Password, &user.Email)
 	}
 
-	return user
+	return user, nil
 }
 
 // Update register

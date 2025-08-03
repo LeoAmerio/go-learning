@@ -74,6 +74,64 @@ func CreateUser(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(output)
 }
 
-func UpdateUser(w http.ResponseWriter, r *http.Request) {}
+func UpdateUser(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Content-Type", "application/json")
 
-func DeleteUser(w http.ResponseWriter, r *http.Request) {}
+	// Obtener el registro
+	user := models.User{}
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&user); err != nil {
+		http.Error(rw, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	// Validar campos requeridos
+	if user.Username == "" || user.Password == "" || user.Email == "" {
+		http.Error(rw, "Missing required fields: username, password, and email are required", http.StatusBadRequest)
+		return
+	}
+
+	db.Connect()
+	defer db.Close()
+
+	// Crear el usuario con los datos recibidos
+	user.Save()
+
+	// Retornar el usuario creado
+	output, err := json.Marshal(user)
+	if err != nil {
+		http.Error(rw, "Error creating response", http.StatusInternalServerError)
+		return
+	}
+
+	rw.WriteHeader(http.StatusCreated)
+	rw.Write(output)
+}
+
+func DeleteUser(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Content-Type", "application/json")
+
+	// Obtener el ID de la URL
+	vars := mux.Vars(r)
+	userId, _ := strconv.Atoi(vars["id"])
+
+	db.Connect()
+	user := models.GetUserByID(int64(userId))
+	if user == nil {
+		http.Error(rw, "User not found", http.StatusNotFound)
+		return
+	}
+	user.Delete()
+	fmt.Printf("User with ID %d deleted successfully\n", userId)
+
+	db.Close()
+	output, err := json.Marshal(user)
+	if err != nil {
+		http.Error(rw, "Error creating response", http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprintln(rw, string(output))
+
+	rw.WriteHeader(http.StatusNoContent)
+}
